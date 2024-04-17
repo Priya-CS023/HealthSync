@@ -4,6 +4,8 @@ import { Toaster } from 'react-hot-toast';
 import Login from './pages/login';
 import Register from './pages/register';
 import Home from './pages/home';
+import ApplyDoctor from './pages/ApplyDoctor';
+import Notifications from './pages/Notifications';
 import { useSelector } from "react-redux";
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
@@ -13,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       {loading && (<div className="spinner-parent">
-        <div class="spinner-border" role="status">
+        <div className="spinner-border" role="status">
         </div>
       </div>)}
       <Toaster position="top-center" reverseOrder={false} />
@@ -21,6 +23,8 @@ function App() {
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/apply-doctor" element={<ProtectedRoute><ApplyDoctor/></ProtectedRoute>} />
+        <Route path="/notifications" element={<ProtectedRoute><Notifications/></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
