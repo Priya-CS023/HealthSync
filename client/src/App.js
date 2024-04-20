@@ -8,6 +8,7 @@ import ApplyDoctor from "./pages/ApplyDoctor";
 import Notifications from "./pages/Notifications";
 import UsersList from "./pages/Admin/UsersList";
 import DoctorsList from "./pages/Admin/DoctorsList";
+import Profile from "./pages/Doctor/Profile";
 import { useSelector } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -76,6 +77,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DoctorsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/doctor/profile/:userId"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
