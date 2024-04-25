@@ -5,6 +5,7 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Home from "./pages/home";
 import ApplyDoctor from "./pages/ApplyDoctor";
+import BookAppointment from "./pages/BookAppointment";
 import Notifications from "./pages/Notifications";
 import UsersList from "./pages/Admin/UsersList";
 import DoctorsList from "./pages/Admin/DoctorsList";
@@ -85,6 +86,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/book-appointment/:doctorId"
+          element={
+            <ProtectedRoute>
+              <BookAppointment />
             </ProtectedRoute>
           }
         />

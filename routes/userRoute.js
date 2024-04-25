@@ -5,6 +5,7 @@ const Doctor = require("../models/doctorModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
+const Appointment = require("../models/appointmentModel");
 
 router.post("/register", async (req, res) => {
   try {
@@ -174,6 +175,72 @@ router.post("/delete-all-notifications", authMiddleware, async (req, res) => {
     res
       .status(500)
       .send({ message: "Error applying for doctor account", success: false });
+  }
+});
+
+router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
+  try {
+    const doctors = await Doctor.find({ status: "approved" });
+    res.status(200).send({
+      message: "Doctors fetched successfully",
+      success: true,
+      data: doctors,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error applying doctor account",
+      success: false,
+      error,
+    });
+  }
+});
+
+router.post("/book-appointment", authMiddleware, async (req, res) => {
+  try {
+    req.body.status = "pending";
+    const newAppointment = new Appointment(req.body);
+    await newAppointment.save();
+
+    // Fetch user and doctor
+    const user = await User.findOne({ _id: req.body.userId });
+    const doctor = await Doctor.findOne({ _id: req.body.doctorId });
+
+    if (!doctor) {
+      return res.status(404).send({
+        message: "Doctor not found",
+        success: false,
+      });
+    }
+
+    if (!doctor.unseenNotifications) {
+      doctor.unseenNotifications = [];
+    }
+
+    doctor.unseenNotifications.push({
+      type: "new-appointment-request",
+      message: `${req.body.firstName} ${req.body.lastName} has requested an appointment`,
+      data: {
+        appointmentId: newAppointment._id,
+        name: req.body.firstName + " " + req.body.lastName,
+      },
+      onClickPath: "/doctor/appointments",
+    });
+
+    await doctor.save();
+    await user.save();
+
+    res.status(200).send({
+      message: "Appointment booked successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    res.status(500).send({
+      message: "Error booking appointment",
+      success: false,
+      error: error.message, // Sending the actual error message
+    });
   }
 });
 

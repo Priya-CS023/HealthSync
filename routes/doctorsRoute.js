@@ -52,4 +52,27 @@ router.post("/update-doctor-profile", authMiddleware, async (req, res) => {
   }
 });
 
+router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ _id: req.body.doctorId });
+    if (!doctor) {
+      return res.status(404).send({
+        success: false,
+        message: "Doctor not found for the provided user ID",
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Doctor information fetched successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "Error getting doctor info",
+      success: false,
+      error,
+    });
+  }
+});
+
 module.exports = router;
